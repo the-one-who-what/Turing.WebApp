@@ -1,0 +1,74 @@
+﻿@page "/"
+@rendermode InteractiveAuto
+@using Turing.Core
+@using Turing.Core.Machine
+@using Turing.Core.MachineTape
+@using Turing.Core.Rules
+@using Turing.WebApp.Client.Components.History
+@using Turing.WebApp.Client.Components.RulesTable
+@using Turing.WebApp.Client.Components.Tape
+@using Turing.WebApp.Client.ViewModel
+
+<div class="machine-body">
+	<h1>Turing machine emulator</h1>
+	<TapeComponent Tape="_tape" Inputs="_rulesTableVm.Inputs"></TapeComponent>
+
+	<div class="control-buttons">
+		<button @onclick="OnStepClick">Step</button>
+		<button @onclick="OnUndoClick">Undo</button>
+		<button @onclick="OnResetClick">Reset</button>
+		<button @onclick="OnClearTapeClick">Clear tape</button>
+	</div>
+	
+	<RulesTable Rules="_rulesTableVm" CurrentRule="_currentRule" ValueChanged="OnRulesChanged"></RulesTable>
+	<ResultComponent Result="_stepResult"></ResultComponent>
+	<HistoryList Model="_machine?.History.ToList()"></HistoryList>
+</div>
+
+
+@code {
+	Tape _tape = new();
+	RulesTableVm _rulesTableVm = Samples.BinaryIncrement!;
+
+	bool _rulesDirty = true;
+
+	void OnRulesChanged(RulesTableVm rules)
+	{
+		_rulesDirty = true;
+	}
+
+	TuringMachine? _machine;
+	TransitionRule? _currentRule = null;
+	StepResult _stepResult;
+
+	void OnStepClick()
+	{
+		if (_rulesDirty || _machine == null)
+		{
+			TransitionRuleSet rules = new(_rulesTableVm.Rules.Select(r => r.Rule).ToList());
+			TuringMachineDefinition definition = new(rules, _rulesTableVm.Initial);
+			_machine = new(definition, _tape);
+			_rulesDirty = false;
+		}
+		_stepResult = _machine.Step();
+		_currentRule = _machine.History.FirstOrDefault();
+	}
+	void OnUndoClick()
+	{
+		if (_machine != null)
+		{
+			_machine.Undo();
+			_currentRule = _machine.History.FirstOrDefault();
+		}
+	}
+	void OnResetClick()
+	{
+		_machine?.Reset();
+		_currentRule = null;
+	}
+	void OnClearTapeClick()
+	{
+		_tape = new();
+		_machine?.SetTape(_tape);
+	}
+}

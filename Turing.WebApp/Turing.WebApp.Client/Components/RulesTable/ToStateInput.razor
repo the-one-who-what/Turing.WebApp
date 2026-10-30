@@ -1,0 +1,32 @@
+﻿@using Turing.WebApp.Client.ViewModel
+
+<select @onchange="OnChange">
+	@foreach (FromStateVm fromState in Options)
+	{
+		<option selected="@(fromState.Id == Selected)" value="@fromState.Id">@fromState.State.Name</option>
+	}
+</select>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public List<FromStateVm> Options { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public Guid Selected { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> ValueChanged { get; set; }
+	void OnChange(ChangeEventArgs e)
+	{
+		if (e.Value == null)
+			return;
+
+		Guid selectedId = Guid.Parse((string)e.Value);
+		Selected = selectedId;
+		OnValueChanged();
+	}
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Selected);
+}

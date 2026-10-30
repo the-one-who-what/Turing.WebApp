@@ -1,0 +1,113 @@
+﻿@using Turing.Core.Machine
+@using Turing.Core.MachineTape
+@using Turing.Core.Rules
+@using Turing.WebApp.Client.ViewModel
+
+<div>
+	<table class="rules-table">
+		<tr>
+			<td>
+				<button @onclick="OnAddFromStateClick" class="button">+ state</button>
+				<button @onclick="OnAddInputClick" class="button">+ symbol</button>
+			</td>
+			@foreach(InputVm input in Rules.Inputs)
+			{
+				<td>
+					<div class="input-cell">
+						<div class="input-cell-input">
+							<InputSymbolInput Model="input.Input" ValueChanged="OnInputValueChanged"></InputSymbolInput>
+						</div>
+						@if (input.Input != TapeSymbol.Blank)
+						{
+							<div>
+								<button @onclick="() => OnRemoveInputClick(input.Input)" class="button">-</button>
+							</div>
+						}
+					</div>
+				</td>
+			}
+		</tr>
+		@foreach(FromStateVm fromState in Rules.FromStates)
+		{
+			<tr>
+				<td>
+					<div class="fromstate-cell">
+						<FromStateInput Model="fromState.State" IsInitial="@(fromState.State == Rules.Initial)" InitialStateSelected="OnInitialStateSelected" ValueChanged="OnFromStateValueChanged"></FromStateInput>
+						@if (Rules.FromStates.Count > 1)
+						{
+							<button @onclick="() => OnRemoveFromStateClick(fromState.State)" class="button">-</button>
+						}
+					</div>
+				</td>
+				
+				@foreach (InputVm input in Rules.Inputs)
+				{
+					RuleVm? ruleVm = Rules.GetRule(fromState.State, input.Input);
+					if (ruleVm != null)
+					{
+						<td id="@(ruleVm.Rule == CurrentRule ? "table-rule-highlighter" : null)">
+							<div class="rule-cell">
+								<RuleInput Model="ruleVm" ValueChanged="OnRuleValueChanged"></RuleInput>
+							</div>
+						</td>
+					}
+				}
+			</tr>
+		}
+	</table>
+</div>
+@code {
+	[Parameter]
+	[EditorRequired]
+	public RulesTableVm Rules { get; set; }
+
+	[Parameter]
+	public EventCallback<RulesTableVm> ValueChanged { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public TransitionRule? CurrentRule { get; set; }
+
+	void OnInitialStateSelected(MachineState state)
+	{
+		Rules.Initial = state;
+		OnValueChanged();
+	}
+
+	void OnFromStateValueChanged(MachineState state)
+	{
+		OnValueChanged();
+	}
+	void OnInputValueChanged(TapeSymbol symbol)
+	{
+		OnValueChanged();
+	}
+	void OnRuleValueChanged(RuleVm rule)
+	{
+		OnValueChanged();
+	}
+
+	void OnAddFromStateClick()
+	{
+		Rules.AddFromState(new MachineState(String.Empty));
+		OnValueChanged();
+	}
+	void OnAddInputClick()
+	{
+		Rules.AddInput(new TapeSymbol(String.Empty));
+		OnValueChanged();
+	}
+	void OnRemoveFromStateClick(MachineState state)
+	{
+		Rules.RemoveFromState(state);
+		OnValueChanged();
+	}
+	void OnRemoveInputClick(TapeSymbol symbol)
+	{
+		Rules.RemoveInput(symbol);
+		OnValueChanged();
+	}
+
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Rules);
+}

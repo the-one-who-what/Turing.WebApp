@@ -1,0 +1,29 @@
+﻿@using Turing.WebApp.Client.ViewModel
+
+<div>
+	<select @bind:after="OnChange" @bind="Selected">
+		@foreach (InputVm input in Options)
+		{
+			<option value="@input.Id">@(input.Input.Value ?? "⊔")</option>
+		}
+	</select>
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public IReadOnlyCollection<InputVm> Options { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public Guid Selected { get; set; }
+
+	[Parameter]
+	public EventCallback<Guid> ValueChanged { get; set; }
+	void OnChange()
+	{
+		OnValueChanged();
+	}
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Selected);
+}

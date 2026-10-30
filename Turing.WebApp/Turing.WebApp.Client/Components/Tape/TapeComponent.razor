@@ -1,0 +1,81 @@
+﻿@using Turing.Core.MachineTape
+@using Turing.WebApp.Client.ViewModel
+
+<div class="tape-wrapper">
+	<input type="button" value="<" @onclick="OnMoveLeftClick" class="button"/>
+	@for (int i = -15; i < 0; i++)
+	{
+		<div class="tape-cell">
+			<TapeSymbolLabel Symbol="@(Tape.ReadAt(i))"></TapeSymbolLabel>
+		</div>
+	}
+	<div id="tape-current-highlighter" class="tape-cell">
+		<SymbolInput
+			ValueChanged="OnCurrentValueChanged"
+			Selected="@(Inputs.FirstOrDefault(i => i.Input == Tape.Current.Symbol)!.Id)"
+			Options="Inputs">
+		</SymbolInput>
+	</div>
+	@for (int i = 1; i < 16; i++)
+	{
+		<div class="tape-cell">
+			<TapeSymbolLabel Symbol="@(Tape.ReadAt(i))"></TapeSymbolLabel>
+		</div>
+	}
+	<input type="button" value=">" @onclick="OnMoveRightClick" class="button" />
+</div>
+
+@code {
+
+	[Parameter]
+	[EditorRequired]
+	public Tape Tape { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public IReadOnlyCollection<InputVm> Inputs { get; set; }
+
+	void OnCurrentValueChanged(Guid id)
+	{
+		TapeSymbol symbol = Inputs.FirstOrDefault(i => i.Id == id)!.Input;
+		Tape.Write(symbol);
+		SetCells();
+		OnValueChanged();
+	}
+	void OnMoveLeftClick()
+	{
+		Tape.MoveLeft();
+		SetCells();
+		OnValueChanged();
+	}
+	void OnMoveRightClick()
+	{
+		Tape.MoveRight();
+		SetCells();
+		OnValueChanged();
+	}
+
+	public void SetCells()
+	{
+		List<TapeSymbol> rightCells = new();
+		List<TapeSymbol> leftCells = new();
+
+		for (int i = 1; i < 16; i++)
+			rightCells.Add(Tape.ReadAt(i));
+
+		for (int i = -15; i < 0; i++)
+			leftCells.Add(Tape.ReadAt(i));
+
+		_tapeCellsRight = rightCells;
+		_tapeCellsLeft = leftCells;
+	}
+
+	List<TapeSymbol> _tapeCellsRight = new();
+	List<TapeSymbol> _tapeCellsLeft = new();
+
+	[Parameter]
+	public EventCallback<Tape> ValueChanged { get; set; }
+
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Tape);
+}

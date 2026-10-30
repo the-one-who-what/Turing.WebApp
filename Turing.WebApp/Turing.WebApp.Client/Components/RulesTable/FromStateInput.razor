@@ -1,0 +1,60 @@
+﻿@using Turing.Core.Machine
+
+<div>
+	<input type="text" @bind="_text" @bind:after="OnTextChanged"/>
+	<div class="fromstate-checkbox">
+		<input type="checkbox" @bind="_final" @bind:after="OnFinalChanged"
+		<div>Final state</div>
+	</div>
+	<div class="fromstate-checkbox">
+		<input type="checkbox" @bind="_initial" @bind:after="OnInitialChanged"/>
+		<div>Initial state</div>
+	</div>
+
+</div>
+
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public MachineState Model { get; set; }
+
+	string _text = String.Empty;
+	bool _final = false;
+
+	[Parameter]
+	[EditorRequired]
+	public bool IsInitial { get; set; }
+
+	bool _initial = false;
+
+	void OnTextChanged()
+	{
+		Model.Name = _text;
+		OnValueChanged();
+	}
+	void OnFinalChanged()
+	{
+		Model.Final = _final;
+		OnValueChanged();
+	}
+	void OnInitialChanged()
+	{
+		InitialStateSelected.InvokeAsync(Model);
+	}
+
+	[Parameter]
+	public EventCallback<MachineState> ValueChanged { get; set; }
+
+	[Parameter]
+	public EventCallback<MachineState> InitialStateSelected { get; set; }
+
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Model);
+
+	protected override void OnParametersSet()
+	{
+		_text = Model.Name;
+		_initial = IsInitial;
+	}
+}

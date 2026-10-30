@@ -1,0 +1,45 @@
+﻿@layer base, highlights;
+
+.rules-table {
+	border-collapse: collapse;
+}
+
+
+#table-rule-highlighter {
+	border: 2px solid black;
+}
+
+.rules-table td {
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.rules-table td * {
+	align-content: center;
+	margin: 2px;
+}
+
+.input-cell {
+	display: flex;
+	justify-content: center;
+}
+
+.fromstate-cell {
+	display: flex;
+	justify-content: center;
+}
+
+.fromstate-checkbox {
+	display: flex;
+	justify-content: left;
+}
+.fromstate-checkbox > * {
+	margin: 2px;
+}
+
+.rule-cell {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+}

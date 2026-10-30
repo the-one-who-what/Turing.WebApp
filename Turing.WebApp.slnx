@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Turing.Core/Turing.Core.csproj" />
+  <Project Path="Turing.WebApp/Turing.WebApp.Client/Turing.WebApp.Client.csproj" />
+  <Project Path="Turing.WebApp/Turing.WebApp/Turing.WebApp.csproj" />
+</Solution>

@@ -1,0 +1,28 @@
+﻿@using Turing.Core.Rules
+
+<div>
+	<select @bind="_direction" @bind:after="OnChange">
+		@foreach (Direction direction in Enum.GetValues<Direction>())
+		{
+			<option value="@direction">@direction</option>
+		}
+	</select>
+</div>
+
+@code {
+	[Parameter]
+	public EventCallback<Direction> ValueChanged { get; set; }
+
+	[Parameter]
+	public Direction Direction { get; set; }
+
+	Direction _direction = Direction.None;
+
+	void OnChange() =>
+		ValueChanged.InvokeAsync(_direction);
+
+	protected override void OnParametersSet()
+	{
+		_direction = Direction;
+	}
+}

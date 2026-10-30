@@ -1,0 +1,45 @@
+﻿@using Turing.Core.Rules
+
+<div class="history-wrapper">
+	@if (Model != null)
+	{
+		@foreach (TransitionRule rule in Model)
+		{
+			<div class="history-item">
+				<div>⟨</div>
+				<div>
+					<TapeSymbolLabel Symbol="rule.Input"></TapeSymbolLabel>
+				</div>
+				<div>, </div>
+				<div>@rule.FromState.Name⟩</div>
+				<div> ⇒ </div>
+				<div>⟨</div>
+				<div>
+					<TapeSymbolLabel Symbol="rule.Output"></TapeSymbolLabel>
+				</div>
+				<div>, </div>
+				<div>@rule.ToState.Name</div>
+				<div>, </div>
+				<div>@GetDirection(rule.Direction)</div>
+				<div>⟩</div>	
+			</div>
+		}
+	}
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public List<TransitionRule> Model { get; set; }
+
+	string GetDirection(Direction direction)
+	{
+		return direction switch
+		{
+			Direction.Left => "←",
+			Direction.Right => "→",
+			Direction.None => "N",
+			_ => String.Empty
+		};
+	}
+}

@@ -1,0 +1,20 @@
+﻿.history-item {
+	font-size: 20px;
+	display: flex;
+	align-content: flex-start;
+	justify-content: left;
+}
+
+.history-wrapper {
+	display: inline-block;
+	height: 200px;
+	overflow: auto;
+}
+
+.history-item > div {
+	white-space: pre;
+}
+
+.result-message {
+	font-size: 20px;
+}

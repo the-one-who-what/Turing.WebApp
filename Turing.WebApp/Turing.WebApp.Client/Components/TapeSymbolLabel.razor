@@ -1,0 +1,12 @@
+﻿@using Turing.Core.MachineTape
+
+<div class="@(Symbol.IsBlank ? "symbol-label-blank" : "symbol-label-regular")">
+	@(Symbol.IsBlank ? "⊔" : Symbol.Value)
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public TapeSymbol Symbol { get; set; }
+}
+

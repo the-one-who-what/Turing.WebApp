@@ -1,0 +1,34 @@
+﻿@using Turing.Core.Rules
+@using Turing.WebApp.Client.ViewModel
+
+<OutputInput Options="Model.Inputs" Selected="Model.OutputId" ValueChanged="OnOutputChanged"></OutputInput>
+<DirectionInput Direction="Model.Rule.Direction" ValueChanged="OnDirectionChanged"></DirectionInput>
+<ToStateInput Options="Model.FromStates" Selected="Model.ToStateId" ValueChanged="OnToStateChanged"></ToStateInput>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public RuleVm Model { get; set; }
+
+	[Parameter]
+	public EventCallback<RuleVm> ValueChanged { get; set; }
+
+	void OnOutputChanged(Guid id)
+	{
+		Model.OutputId = id;
+		OnValueChanged();
+	}
+	void OnDirectionChanged(Direction direction)
+	{
+		Model.Rule.Direction = direction;
+		OnValueChanged();
+	}
+	void OnToStateChanged(Guid id)
+	{
+		Model.ToStateId = id;
+		OnValueChanged();
+	}
+
+	void OnValueChanged() =>
+		ValueChanged.InvokeAsync(Model);
+}

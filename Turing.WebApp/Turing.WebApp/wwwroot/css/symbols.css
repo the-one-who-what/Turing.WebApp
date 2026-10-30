@@ -1,0 +1,12 @@
+﻿.symbol-label-regular {
+	color: black;
+}
+
+.symbol-label-blank {
+	color: gray;
+}
+
+.symbol-blank,
+.symbol-regular {
+	text-align: center;
+}

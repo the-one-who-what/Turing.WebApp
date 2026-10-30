@@ -1,0 +1,21 @@
+﻿.tape-wrapper {
+	display: flex;
+	justify-content: center;
+	border: 1px solid black;
+	margin-bottom: 10px;
+}
+
+.tape-cell {
+	flex: 1;
+	border-left: 1px solid #808080;
+	border-right: 1px solid #808080;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	font-size: 20px;
+}
+
+#tape-current-highlighter {
+	border: 2px solid black;
+}

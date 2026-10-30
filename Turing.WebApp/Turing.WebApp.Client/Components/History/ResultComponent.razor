@@ -1,0 +1,22 @@
+﻿@using Turing.Core.Machine
+
+<div>
+	@GetMessage(Result)
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public StepResult Result { get; set; }
+
+	string GetMessage(StepResult result)
+	{
+		return result switch
+		{
+			StepResult.Continue => "Continue.",
+			StepResult.Halt => "Final state reached.",
+			StepResult.NoRule => "No rule found.",
+			_ => String.Empty
+		};
+	}
+}

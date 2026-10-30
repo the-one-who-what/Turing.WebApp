@@ -1,0 +1,19 @@
+﻿.machine-body > * {
+	margin: 10px;
+}
+
+.button {
+	border: 1px solid black;
+	background: none;
+}
+
+.control-buttons {
+	display: flex;
+	justify-content: left;
+}
+.control-buttons > * {
+	border: 1px solid black;
+	background: none;
+
+	margin: 2px;
+}
